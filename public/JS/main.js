@@ -2,6 +2,8 @@ console.log('js file')
 
 let signupForm = document.getElementById('signupForm')
 signupForm.addEventListener('submit',formSubmit)
+let signinForm = document.getElementById('signinForm')
+signinForm.addEventListener('submit',formSubmit)
 
 function formSubmit(e){
     e.preventDefault();
