@@ -1,5 +1,6 @@
+const bcrypt = require('bcrypt')
 const User = require('../model/user')
-
+const saltRounds = 10;
 exports.signup = async (req,res)=>{
   const {name,email,password} = req.body;
   console.log('data..',name,email,password)
@@ -7,12 +8,13 @@ exports.signup = async (req,res)=>{
   let user = await User.findOne({where:{email:email}})
   if(user === null){
     console.log('not exist..')
-    let response = await User.create({name,email,password})
-    res.json(response)
-  }
+    let hasedPassword = await bcrypt.hash(password,saltRounds)
+    let response = await User.create({name,email,password:hasedPassword})
+    res.status(201).json(response)
+  } 
   else{
   console.log('exist..')
-  res.json({msg:"exist"})
+  res.status(409).json({success:false,message:"User already exist"})
   }
 }
 catch(e){
@@ -32,7 +34,8 @@ exports.signin = async (req,res)=>{
     }
     else{
     console.log('exist..',user.password)
-    if(password === user.password)
+    const match = await bcrypt.compare(password,user.password)
+    if(match)
     res.status(200).json({success:true,meassage:"You are successfully logged in"}) 
     else{
     res.status(401).json({success:false,meassage:"Incorrect password"}) 

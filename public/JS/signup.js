@@ -1,4 +1,4 @@
-console.log('js file')
+
 
 let signupForm = document.getElementById('signupForm')
 signupForm.addEventListener('submit',singnupFormSubmit)
@@ -19,19 +19,30 @@ function singnupFormSubmit(e){
 
 
 const signup = async (user)=>{
+    let div = document.getElementById('errmsg')
+         div.innerHTML=''
+    let success = true;
+    let errMsg = ''
     console.log('signup call')
+    try{
     const resp = await axios.post('http://localhost:3001/user/signup',user)
     console.log('resp',resp)
-    if(resp.data.msg == 'exist'){
+    }catch(e){
+      success = e.response.data.sucsess
+      errMsg = e.response.data.message
+      console.log('e',e)
+      
+    }
+    if(!success){
         let div = document.getElementById('errmsg')
         let p = document.createElement('p')
-        p.appendChild(document.createTextNode('User already exist'))
+        p.appendChild(document.createTextNode(`${errMsg}`))
         document.getElementById('errmsg').style.color = 'red'
         div.appendChild(p)
+    }else{
+        alert('Thanks for signing up')
     }
-    else{
-        let div = document.getElementById('errmsg')
-        div.innerHTML=''
-    }
+  
+
 }
 
