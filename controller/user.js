@@ -19,3 +19,28 @@ catch(e){
     console.log('er',e)
 }
 }
+
+exports.signin = async (req,res)=>{
+    const {email,password} = req.body;
+    console.log('data..',email,password)
+    try{
+    let user = await User.findOne({where:{email:email}})
+    console.log('user...',user)
+    if(user === null ){
+      console.log('not exist..')
+      res.status(404).json({success:false,meassage:"The email address you entered isn't connected to an account."}) 
+    }
+    else{
+    console.log('exist..',user.password)
+    if(password === user.password)
+    res.status(200).json({success:true,meassage:"You are successfully logged in"}) 
+    else{
+    res.status(401).json({success:false,meassage:"Incorrect password"}) 
+    }
+
+    }
+  }
+  catch(e){
+      console.log('er',e)
+  }
+  }

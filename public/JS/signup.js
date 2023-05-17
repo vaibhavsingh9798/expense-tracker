@@ -1,19 +1,22 @@
 console.log('js file')
 
 let signupForm = document.getElementById('signupForm')
-signupForm.addEventListener('submit',formSubmit)
-let signinForm = document.getElementById('signinForm')
-signinForm.addEventListener('submit',formSubmit)
+signupForm.addEventListener('submit',singnupFormSubmit)
 
-function formSubmit(e){
+
+function singnupFormSubmit(e){
     e.preventDefault();
     let name = document.getElementById('name').value 
     let email = document.getElementById('email').value 
     let password = document.getElementById('password').value 
     let user = {name,email,password}
     signup(user)
-    console.log('submited')
+     document.getElementById('name').value =""
+     document.getElementById('email').value =""
+     document.getElementById('password').value =""
 }
+
+
 
 const signup = async (user)=>{
     console.log('signup call')
@@ -31,3 +34,4 @@ const signup = async (user)=>{
         div.innerHTML=''
     }
 }
+
