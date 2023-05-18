@@ -37,5 +37,6 @@ const login = async (user)=>{
     }
     else{
       alert('You are successfully logged in')
+      location.assign('file:///D:/expense_tracker/view/expense.html')
     }
 }
