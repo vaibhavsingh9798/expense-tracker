@@ -1,6 +1,10 @@
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 const User = require('../model/user')
+require('dotenv').config()
 const saltRounds = 10;
+
+
 exports.signup = async (req,res)=>{
   const {name,email,password} = req.body;
   console.log('data..',name,email,password)
@@ -22,6 +26,9 @@ catch(e){
 }
 }
 
+let getnrateAccessToken = (id)=>{
+  return jwt.sign({userId:id},process.env.SECRET_KEY)
+}
 exports.signin = async (req,res)=>{
     const {email,password} = req.body;
     console.log('data..',email,password)
@@ -36,7 +43,7 @@ exports.signin = async (req,res)=>{
     console.log('exist..',user.password)
     const match = await bcrypt.compare(password,user.password)
     if(match)
-    res.status(200).json({success:true,meassage:"You are successfully logged in"}) 
+    res.status(200).json({success:true,meassage:"You are successfully logged in",token:getnrateAccessToken(user.id)}) 
     else{
     res.status(401).json({success:false,meassage:"Incorrect password"}) 
     }
@@ -47,3 +54,4 @@ exports.signin = async (req,res)=>{
       console.log('er',e)
   }
   }
+
