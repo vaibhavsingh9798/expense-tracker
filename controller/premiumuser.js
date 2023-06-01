@@ -1,5 +1,6 @@
 const Expense = require('../model/expense')
 const User = require('../model/user')
+const sequelize = require('sequelize')
 
  // using two time query from two table
 // exports.getLeaderBoard = async (req,res)=>{
@@ -31,23 +32,44 @@ const User = require('../model/user')
 // }   
 // }
 
-exports.getLeaderBoard = async (req,res)=>{
-    let data = []
-    try{
-let userWithExpense = await User.findAll({include:Expense,})
+// 2nd way using inner join
+// exports.getLeaderBoard = async (req,res)=>{
+//     let data = []
+//     try{
+// let userWithExpense = await User.findAll({include:Expense,})
   
 // Access the result
- userWithExpense.forEach((user) =>{
-      console.log('user',user.name)
-       user.expenses.forEach((expense) =>{
-         console.log('expense',expense.eamount)
-         data.push({name:user.name,texpense:expense.eamount})
+//  userWithExpense.forEach((user) =>{
+//       console.log('user',user.name)
+//        user.expenses.forEach((expense) =>{
+//          console.log('expense',expense.eamount)
+//          data.push({name:user.name,texpense:expense.eamount})
+//        })
+//  })
+//  data.sort((a,b) => b.texpense-a.texpense)
+//  console.log(data)
+//  res.status(200).json(data)
+//     }catch(err){
+//       console.log(err)
+//     }
+// }
+
+exports.getLeaderBoard = async (req,res)=>{
+    try{
+       let users = await User.findAll({
+        attributes:['id','name',[sequelize.fn('sum',sequelize.col('expenses.eamount')),'total_cost']],
+        include : [
+            {
+                model : Expense,
+                attributes:[]
+            }
+        ],
+        group:['user.id'],
+        order:[['total_cost','DESC']]  // sorted des order
+
        })
- })
- data.sort((a,b) => b.texpense-a.texpense)
- console.log(data)
- res.status(200).json(data)
+       res.status(200).json(users)
     }catch(err){
-      console.log(err)
+     console.log(err)
     }
 }

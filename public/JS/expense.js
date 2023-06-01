@@ -43,7 +43,7 @@ async function printLeaderBoard(user){
 // LEADERBOARD
  document.getElementById('lb-title').innerHTML="LEADERBOARD"
  let li = document.createElement('li')
- li.appendChild(document.createTextNode(`Name - ${user.name} Total Expense - ${user.texpense}`))
+ li.appendChild(document.createTextNode(`Name - ${user.name} Total Expense - ${user.total_cost}`))
  lb.appendChild(li)
 }
     
