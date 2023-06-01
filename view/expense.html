@@ -10,7 +10,9 @@
 <body>
     <div class="text-center mt-4 p-4 bg-success text-white">
       <h2>Expense Tracker</h2>
-      <button class="float-right p-1 " id="rzp-button"></button>
+      <div id="rzp-lb">
+      <button class="float-right m-1 p-1" id="rzp-button"></button>
+    </div>
     </div>
     <div class="container w-50 bg-light">
     <form id="expenseForm">
@@ -38,6 +40,10 @@
         <button type="submit" class="btn btn-secondry btn-lg btn-block mt-5">Add Expense</button>
       </form>
       <ul id="expenses" class="list-group mt-2">
+
+      </ul>
+      <h3 id="lb-title" class="text-center list-group m-3 text-light bg-secondary"></h3>
+      <ul id="leaderboard" class="list-group mt-2 pb-2">
 
       </ul>
     </div>

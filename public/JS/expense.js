@@ -15,7 +15,7 @@ function submitForm(e){
     postExpense(expense)
 }
 
-function print(item){
+function printExpense(item){
     let ul = document.getElementById('expenses')
     let li = document.createElement('li')
     li.setAttribute('class','list-group-item m-1')
@@ -30,13 +30,38 @@ function print(item){
 
 function addButton(premimum){
     let btn = document.getElementById('rzp-button')
+    btn.innerHTML=""
     if(premimum){ 
          btn.appendChild(document.createTextNode('Premium User'))
         }else{
-            btn.innerHTML=""
             btn.appendChild(document.createTextNode('Buy Premium Membership'))
         }
 }
+
+let lb = document.getElementById('leaderboard')
+async function printLeaderBoard(user){
+// LEADERBOARD
+ document.getElementById('lb-title').innerHTML="LEADERBOARD"
+ let li = document.createElement('li')
+ li.appendChild(document.createTextNode(`Name - ${user.name} Total Expense - ${user.texpense}`))
+ lb.appendChild(li)
+}
+    
+function addLeadeboard(premium){
+    let btn = document.createElement('button')
+    btn.appendChild(document.createTextNode('Leaderboard'))
+    btn.setAttribute('class','float-right m-1 p-1')
+    let div = document.getElementById('rzp-lb')
+    if(premium)
+    div.appendChild(btn).onclick = async function(){
+        console.log('click....')
+        let users = await axios.get(`http://localhost:3001/premium/showLeaderBoard`)
+        console.log('users..',users)
+        users.data.map(user => printLeaderBoard(user))
+    }
+
+
+ }
 
 const getExpense = async () =>{
     console.log('get call token',token)
@@ -48,10 +73,11 @@ const getExpense = async () =>{
    const usercategory = response.data
    ispremiumuser = response.data
    console.log('usercategory>>>>>>>',usercategory) 
-   addButton(usercategory)                  
+   addButton(usercategory) 
+   addLeadeboard(usercategory)                 
   // print(item)
   console.log('get resp',resp.data)
-  resp.data.map((item)=> print(item))
+  resp.data.map((item)=> printExpense(item))
 }
 
 const postExpense = async (expense) => {
@@ -76,8 +102,7 @@ function delItem(e){
 }
 
 window.addEventListener('DOMContentLoaded',getExpense)
-
-
+ 
 document.getElementById('rzp-button').onclick = async function(e){
    
     let token = localStorage.getItem('token')
@@ -98,6 +123,7 @@ document.getElementById('rzp-button').onclick = async function(e){
 
         alert('You are a Premium User Now')
         addButton(true)
+        addLeadeboard(true)
     }
 
   };
