@@ -26,7 +26,7 @@ Expense.belongsTo(User,{ foreignKey: 'userId' })
 User.hasMany(Order)
 Order.belongsTo(User)
 
-sequelize.sync()
+sequelize.sync() // {force:true}
 .then(() =>{
     app.listen(3001,()=>{
         console.log('server is running on port 3001')

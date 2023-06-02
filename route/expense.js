@@ -6,8 +6,7 @@ const router = express.Router()
 
 router.get('/allexpenses',userauthonticate.authonticate,expenseController.getExpense)
 
-
-router.post('/addexpense',expenseController.postExpense)
+router.post('/addexpense',userauthonticate.authonticate,expenseController.postExpense)
 
 router.delete('/deleteexpense/:id',expenseController.deleteExpense)
 

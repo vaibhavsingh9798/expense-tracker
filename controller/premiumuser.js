@@ -54,22 +54,33 @@ const sequelize = require('sequelize')
 //     }
 // }
 
+// use group order and inner join also
+// exports.getLeaderBoard = async (req,res)=>{
+//     try{
+//        let users = await User.findAll({
+//         attributes:['id','name',[sequelize.fn('sum',sequelize.col('expenses.eamount')),'total_cost']],
+//         include : [
+//             {
+//                 model : Expense,
+//                 attributes:[]
+//             }
+//         ],
+//         group:['user.id'],
+//         order:[['total_cost','DESC']]  // sorted des order
+
+//        })
+//        res.status(200).json(users)
+//     }catch(err){
+//      console.log(err)
+//     }
+// }
+
 exports.getLeaderBoard = async (req,res)=>{
     try{
-       let users = await User.findAll({
-        attributes:['id','name',[sequelize.fn('sum',sequelize.col('expenses.eamount')),'total_cost']],
-        include : [
-            {
-                model : Expense,
-                attributes:[]
-            }
-        ],
-        group:['user.id'],
-        order:[['total_cost','DESC']]  // sorted des order
+       let users = await User.findAll({attributes:['name','totalexpense'],order:[['totalexpense','DESC']]}) // get only specific col
+        res.status(200).json(users)
 
-       })
-       res.status(200).json(users)
     }catch(err){
-     console.log(err)
+        console.log(err)
     }
 }

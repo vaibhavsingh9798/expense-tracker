@@ -11,8 +11,10 @@ function submitForm(e){
     let description = document.getElementById('description').value
     let category = document.getElementById('category').value
      const expense = {eamount,description,category}
-     console.log('exp',expense)
     postExpense(expense)
+    document.getElementById('eamount').value =""
+     document.getElementById('description').value=""
+    document.getElementById('category').value=""
 }
 
 function printExpense(item){
@@ -43,7 +45,7 @@ async function printLeaderBoard(user){
 // LEADERBOARD
  document.getElementById('lb-title').innerHTML="LEADERBOARD"
  let li = document.createElement('li')
- li.appendChild(document.createTextNode(`Name - ${user.name} Total Expense - ${user.total_cost}`))
+ li.appendChild(document.createTextNode(`Name - ${user.name} Total Expense - ${user.totalexpense}`))
  lb.appendChild(li)
 }
     
@@ -52,11 +54,13 @@ function addLeadeboard(premium){
     btn.appendChild(document.createTextNode('Leaderboard'))
     btn.setAttribute('class','float-right m-1 p-1')
     let div = document.getElementById('rzp-lb')
+    div.innerHTML=""
     if(premium)
     div.appendChild(btn).onclick = async function(){
         console.log('click....')
         let users = await axios.get(`http://localhost:3001/premium/showLeaderBoard`)
         console.log('users..',users)
+        document.getElementById('leaderboard').innerHTML=""
         users.data.map(user => printLeaderBoard(user))
     }
 
@@ -81,7 +85,7 @@ const getExpense = async () =>{
 }
 
 const postExpense = async (expense) => {
-    let resp = await axios.post('http://localhost:3001/expense/addexpense',expense)
+    let resp = await axios.post('http://localhost:3001/expense/addexpense',expense,{headers:{"Authorization":token}})
     console.log('post resp',resp)
     getExpense()
 }
