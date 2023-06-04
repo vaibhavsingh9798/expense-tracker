@@ -1,10 +1,12 @@
 // const Razorpay = require("razorpay")
-let ispremiumuser;
+let ispremiumuser=false;
 let expenseForm = document.getElementById('expenseForm')
 expenseForm.addEventListener('submit',submitForm)
 let ul = document.getElementById('expenses')
 ul.addEventListener('click',delItem)
 let token = localStorage.getItem('token')
+
+// extract user data from form 
 function submitForm(e){
     e.preventDefault()
     let eamount = document.getElementById('eamount').value 
@@ -30,7 +32,7 @@ function printExpense(item){
     ul.appendChild(li)
 }
 
-function addButton(premimum){
+function addPremiumButton(premimum){
     let btn = document.getElementById('rzp-button')
     btn.innerHTML=""
     if(premimum){ 
@@ -66,6 +68,18 @@ function addLeadeboard(premium){
 
 
  }
+ // add table income expense
+  function addTableButton(premium){
+    let div  = document.getElementById('exp-table')
+     div.innerHTML=""
+      let btn = document.createElement('button')
+      btn.appendChild(document.createTextNode('Show Table'))
+      btn.setAttribute('class','float-right p-1 m-1')
+      if(premium)
+      div.appendChild(btn).onclick = async function(){
+        window.location.href='expensetable.html'
+      }
+  }
 
 const getExpense = async () =>{
     console.log('get call token',token)
@@ -77,8 +91,9 @@ const getExpense = async () =>{
    const usercategory = response.data
    ispremiumuser = response.data
    console.log('usercategory>>>>>>>',usercategory) 
-   addButton(usercategory) 
-   addLeadeboard(usercategory)                 
+   addPremiumButton(usercategory) 
+   addLeadeboard(usercategory) 
+   addTableButton(usercategory)                
   // print(item)
   console.log('get resp',resp.data)
   resp.data.map((item)=> printExpense(item))
@@ -126,8 +141,9 @@ document.getElementById('rzp-button').onclick = async function(e){
         },{headers:{"Authorization":token}})
 
         alert('You are a Premium User Now')
-        addButton(true)
+        addPremiumButton(true)
         addLeadeboard(true)
+        addTableButton(true)
     }
 
   };
@@ -148,3 +164,7 @@ document.getElementById('rzp-button').onclick = async function(e){
 
 }
 }
+
+// add income expense table 
+
+
