@@ -11,6 +11,7 @@ const User = require('./model/user')
 const Expense = require('./model/expense')
 const Order = require('./model/orders')
 const ForgotPassword = require('./model/forgotpassword')
+const DownloadFile = require('./model/downloadfile')
 const app = express()
 app.use(cors())
 // getting data from client side form 
@@ -33,6 +34,9 @@ Order.belongsTo(User)
 
 User.hasMany(ForgotPassword)
 ForgotPassword.belongsTo(User)
+
+User.hasMany(DownloadFile,{foreignKey:'userId'})
+DownloadFile.belongsTo(User,{foreignKey:'userId'})
 
 sequelize.sync() // {force:true}
 .then(() =>{

@@ -68,6 +68,15 @@ function addLeadeboard(premium){
 
 
  }
+ // download 
+ 
+//  async function downlaod(e){
+//     e.preventDefault();
+//     console.log('downlad...')
+//     await axios.get(`http://localhost:3001/user/expense/download`,{headers:{"Authorization":token}})
+
+//   }
+
  // add table income expense
   function addTableButton(premium){
     let div  = document.getElementById('exp-table')
@@ -75,9 +84,14 @@ function addLeadeboard(premium){
       let btn = document.createElement('button')
       btn.appendChild(document.createTextNode('Show Table'))
       btn.setAttribute('class','float-right p-1 m-1')
-      if(premium)
+      if(premium){
       div.appendChild(btn).onclick = async function(){
-        window.location.href='expensetable.html'
+        //window.location.href='expensetable.html'
+        // let dow = document.getElementById('dow-btn')
+        // dow.addEventListener('click',downlaod)
+        let response = await axios.get(`http://localhost:3001/expense/download`,{headers:{"Authorization":token}})
+        window.open(response.data.fileURL,'_blank')
+      }
       }
   }
 
