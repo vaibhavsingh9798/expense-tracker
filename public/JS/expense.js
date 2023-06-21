@@ -5,7 +5,8 @@ expenseForm.addEventListener('submit',submitForm)
 let ul = document.getElementById('expenses')
 ul.addEventListener('click',delItem)
 let token = localStorage.getItem('token')
-
+const backendAPI = 'http://localhost:3001' 
+let pagination = document.getElementById('pagination')
 // extract user data from form 
 function submitForm(e){
     e.preventDefault()
@@ -100,7 +101,7 @@ const getExpense = async () =>{
    
     let ul = document.getElementById('expenses')
     ul.innerHTML=''
-   let resp = await axios.get('http://localhost:3001/expense/allexpenses',{headers:{"Authorization":token}})
+   let expresponse = await axios.get('http://localhost:3001/expense/allexpenses',{headers:{"Authorization":token}})
     let response = await axios.get('http://localhost:3001/purchase/usercategory',{headers:{"Authorization":token}})
    const usercategory = response.data
    ispremiumuser = response.data
@@ -109,8 +110,8 @@ const getExpense = async () =>{
    addLeadeboard(usercategory) 
    addTableButton(usercategory)                
   // print(item)
-  console.log('get resp',resp.data)
-  resp.data.map((item)=> printExpense(item))
+  console.log('get resp',expresponse)
+  expresponse.data.expense.map((item)=> printExpense(item))
 }
 
 const postExpense = async (expense) => {
@@ -134,7 +135,65 @@ function delItem(e){
     }
 }
 
-window.addEventListener('DOMContentLoaded',getExpense)
+function showPagination({currentPage,previousPage,nextPage,hasNextPage,hasPreviousPage,lastPage}){
+     pagination.innerHTML=''
+    // console.log('pagination..',pagination)
+     //console.log('current..',currentPage,previousPage,nextPage,hasNextPage,hasPreviousPage,lastPage)
+    // if hash previous page
+   if(hasPreviousPage){
+    let btn2 = document.createElement('button')
+    btn2.setAttribute('class','page-item page-link m-1')
+  btn2.innerHTML = `<h3>${previousPage}</h3>`
+  btn2.addEventListener('click',() => getProducts(previousPage))
+   pagination.appendChild(btn2)
+   } 
+
+   // hash current page
+  let btn1 = document.createElement('button')
+  btn1.setAttribute('class','page-item page-link m-1')
+  btn1.innerHTML = `<h3>${currentPage}</h3>`
+  btn1.addEventListener('click',() => getProducts(currentPage))
+  pagination.appendChild(btn1)
+  
+   // if  hash next page 
+   if(hasNextPage){
+        let btn3 = document.createElement('button')
+        btn3.setAttribute('class','page-item page-link m-1')
+  btn3.innerHTML = `<h3>${nextPage}</h3>`
+  btn3.addEventListener('click',() => getProducts(nextPage))
+   pagination.appendChild(btn3)
+   }
+}
+
+async function getProducts(page){
+    try{
+        let expresponse = await axios.get(`${backendAPI}/expense/allexpenses/?page=${page}`,{headers:{"Authorization":token}})
+                    console.log('getP data',expresponse)
+              //  listProducts(data.products) // DOM manipulation
+                showPagination(expresponse.data) 
+               //  delete previous item from expense list
+                let ul = document.getElementById('expenses')
+                ul.innerHTML = ''
+             //  getExpense() 
+             expresponse.data.expense.map((item)=> printExpense(item))
+
+    }catch(err){
+        console.log(err)
+    }
+}
+
+window.addEventListener('DOMContentLoaded',async ()=>{
+    const page = 1
+    try{
+    let expresponse = await axios.get(`${backendAPI}/expense/allexpenses?page=${page}`,{headers:{"Authorization":token}})
+               console.log('window data load',expresponse.data)
+              //  listProducts() // DOM manipulation
+                showPagination(expresponse.data)  
+               getExpense()
+    }catch(err){
+        console.log(err) 
+    }
+})
  
 document.getElementById('rzp-button').onclick = async function(e){
    

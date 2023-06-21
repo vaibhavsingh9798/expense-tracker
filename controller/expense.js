@@ -28,10 +28,28 @@ exports.downloadExpense = async (req,res) =>{
 
 
 exports.getExpense = async (req,res) =>{
-    console.log('req.user>>>>>>>>>>',req.user,req.user.ispremiumuser)
+   const ITEM_PER_PAGE = 2
+   const page = +req.query.page || 1;
+   console.log('page...',page)
+    console.log('req.user>>>>>>>>>>',req.user.ispremiumuser)
     console.log('req.user.id1....',req.user.id)
-    let resp = await Expense.findAll({where:{userId:req.user.id}})
-    res.status(200).json(resp)
+      try{
+     let totalExpense = await Expense.count()
+     console.log('count...',totalExpense)
+    let Expenses = await Expense.findAll({offset: (page-1)*ITEM_PER_PAGE,limit:ITEM_PER_PAGE,where:{userId:req.user.id}})
+    console.log('expenses....',Expenses)
+    res.status(200).json({
+      expense:Expenses,
+      currentPage:page,
+      hasNextPage: ITEM_PER_PAGE*page < totalExpense,
+      nextPage: page + 1,
+      hasPreviousPage: page > 1,
+      previousPage: page -1,
+      lastPage: Math.ceil(totalExpense/ITEM_PER_PAGE)
+    })
+      }catch(err){
+        res.status(500).json({error:err})
+      }
 }
 
 exports.postExpense = async(req,res) =>{
