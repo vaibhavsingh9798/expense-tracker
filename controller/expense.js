@@ -28,13 +28,14 @@ exports.downloadExpense = async (req,res) =>{
 
 
 exports.getExpense = async (req,res) =>{
-   const ITEM_PER_PAGE = 2
+ 
+   const ITEM_PER_PAGE = +req.query.maxItem || 2
    const page = +req.query.page || 1;
    console.log('page...',page)
     console.log('req.user>>>>>>>>>>',req.user.ispremiumuser)
     console.log('req.user.id1....',req.user.id)
       try{
-     let totalExpense = await Expense.count()
+     let totalExpense = await Expense.count({where:{userId:req.user.id}})
      console.log('count...',totalExpense)
     let Expenses = await Expense.findAll({offset: (page-1)*ITEM_PER_PAGE,limit:ITEM_PER_PAGE,where:{userId:req.user.id}})
     console.log('expenses....',Expenses)

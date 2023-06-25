@@ -7,6 +7,8 @@ ul.addEventListener('click',delItem)
 let token = localStorage.getItem('token')
 const backendAPI = 'http://localhost:3001' 
 let pagination = document.getElementById('pagination')
+let limit = 2;
+
 // extract user data from form 
 function submitForm(e){
     e.preventDefault()
@@ -57,16 +59,16 @@ function addLeadeboard(premium){
     btn.appendChild(document.createTextNode('Leaderboard'))
     btn.setAttribute('class','float-right m-1 p-1')
     let div = document.getElementById('rzp-lb')
-    div.innerHTML=""
+    div.innerHTML=""  
     if(premium)
     div.appendChild(btn).onclick = async function(){
         console.log('click....')
         let users = await axios.get(`http://localhost:3001/premium/showLeaderBoard`)
         console.log('users..',users)
-        document.getElementById('leaderboard').innerHTML=""
+        document.getElementById('leaderboard').innerHTML=""  
         users.data.map(user => printLeaderBoard(user))
     }
-
+ 
 
  }
  // download 
@@ -101,7 +103,7 @@ const getExpense = async () =>{
    
     let ul = document.getElementById('expenses')
     ul.innerHTML=''
-   let expresponse = await axios.get('http://localhost:3001/expense/allexpenses',{headers:{"Authorization":token}})
+   let expresponse = await axios.get(`http://localhost:3001/expense/allexpenses`,{headers:{"Authorization":token}})
     let response = await axios.get('http://localhost:3001/purchase/usercategory',{headers:{"Authorization":token}})
    const usercategory = response.data
    ispremiumuser = response.data
@@ -167,7 +169,9 @@ function showPagination({currentPage,previousPage,nextPage,hasNextPage,hasPrevio
 
 async function getProducts(page){
     try{
-        let expresponse = await axios.get(`${backendAPI}/expense/allexpenses/?page=${page}`,{headers:{"Authorization":token}})
+         limit = +localStorage.getItem('itemperpage')
+         console.log('limit..',limit, typeof limit)
+        let expresponse = await axios.get(`${backendAPI}/expense/allexpenses/?page=${page}&maxItem=${limit}`,{headers:{"Authorization":token}})
                     console.log('getP data',expresponse)
               //  listProducts(data.products) // DOM manipulation
                 showPagination(expresponse.data) 
@@ -182,6 +186,14 @@ async function getProducts(page){
     }
 }
 
+function addRowperPage(e){
+    e.preventDefault();
+    console.log('click...')
+    let selectElement = document.getElementById('rowperpage').value;
+    localStorage.setItem('itemperpage',selectElement)
+    getProducts(1)
+}
+
 window.addEventListener('DOMContentLoaded',async ()=>{
     const page = 1
     try{
@@ -193,6 +205,9 @@ window.addEventListener('DOMContentLoaded',async ()=>{
     }catch(err){
         console.log(err) 
     }
+   // set limit per page
+    let pagerow = document.getElementById('rowperpage')
+    pagerow.addEventListener('click',addRowperPage)
 })
  
 document.getElementById('rzp-button').onclick = async function(e){
@@ -210,7 +225,7 @@ document.getElementById('rzp-button').onclick = async function(e){
         await axios.post(`http://localhost:3001/purchase/updatetransactionstatus`,{
         order_id: options.order_id,
         payment_id: response.razorpay_payment_id,
-        success:true
+        success:true 
         },{headers:{"Authorization":token}})
 
         alert('You are a Premium User Now')
@@ -238,6 +253,6 @@ document.getElementById('rzp-button').onclick = async function(e){
 }
 }
 
-// add income expense table 
+
 
 
