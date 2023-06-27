@@ -1,7 +1,7 @@
 const SibApiV3Sdk = require('sib-api-v3-sdk');
 const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
-require('dotenv').config()
+//require('dotenv').config()
 const Forgotpassword = require('../model/forgotpassword')
 const User = require('../model/user')
 const saltRound = 10;
@@ -9,7 +9,7 @@ const saltRound = 10;
 exports.postMail = async (req,res) =>{
   try{
     let {uemail} = req.body
-    console.log('mail..',uemail)
+   // console.log('mail..',uemail)
     var defaultClient = SibApiV3Sdk.ApiClient.instance; 
     // Configure API key authorization: api-key
    var apiKey = defaultClient.authentications['api-key'];
@@ -27,11 +27,11 @@ exports.postMail = async (req,res) =>{
 
      let uuid = uuidv4()
      let user = await User.findOne({where:{email:uemail}})
-     console.log('user..',user)
+     //console.log('user..',user)
      if(user){
        let userId = user.id;
        let response = await user.createForgotpassword({id:uuid,userId,isactive:true})
-       console.log('response',response)
+       //console.log('response',response)
 
       let respemail = await tranEmailApi.sendTransacEmail({
         sender,
@@ -39,19 +39,19 @@ exports.postMail = async (req,res) =>{
         subject:'Reset Password',
         textContent: `http://localhost:3001/password/resetpassword/${uuid}`
        })
-       console.log('repemail',respemail)
+       //console.log('repemail',respemail)
      }
     
 
     }
 catch(err){
-    console.log('err',err)
+   res.status(500).json({success:false})
 }
 }
 
 exports.resetPassword = async (req,res) =>{
   let {uid} = req.params;
-  console.log('uid',uid)
+ // console.log('uid',uid)
   const passwordFormHTML = `
   <form action="http://localhost:3001/password/updatepassword/${uid}" method="POST">
   <center>
@@ -61,12 +61,14 @@ exports.resetPassword = async (req,res) =>{
     <button type="submit">Reset Password</button></center>
   </form>
 `;
-
+ try{
   let password = await Forgotpassword.findOne({where:{id:uid}})
-   if(password && password.isactive){
-      
+   if(password && password.isactive){  
       res.send(passwordFormHTML)
    }
+  }catch(error){
+    res.status(500).json({success:false})
+  }
 
 }
 
@@ -74,7 +76,7 @@ exports.updatePassword = async (req,res) => {
    
    let {uid} = req.params;
    let {password} = req.body
-  console.log('update password')
+  //console.log('update password')
 
   try{
   let hasedPassword = await bcrypt.hash(password,saltRound)
@@ -88,7 +90,7 @@ exports.updatePassword = async (req,res) => {
    <h2>Your password has been changed successfully.</h2></center>`
     res.send(meassage)
   }catch(err){
-    console.log(err)
+   res.status(500).json({success:false})
   }
 
 } 

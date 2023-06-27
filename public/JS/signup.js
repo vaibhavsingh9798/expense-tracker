@@ -23,14 +23,14 @@ const signup = async (user)=>{
          div.innerHTML=''
     let success = true;
     let errMsg = ''
-    console.log('signup call')
+   // console.log('signup call')
     try{
     const resp = await axios.post('http://localhost:3001/user/signup',user)
-    console.log('resp',resp)
+   // console.log('resp',resp)
     }catch(e){
       success = e.response.data.sucsess
       errMsg = e.response.data.message
-      console.log('e',e)
+      console.error('e',e)
       
     }
     if(!success){

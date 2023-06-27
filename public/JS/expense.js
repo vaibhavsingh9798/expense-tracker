@@ -62,9 +62,9 @@ function addLeadeboard(premium){
     div.innerHTML=""  
     if(premium)
     div.appendChild(btn).onclick = async function(){
-        console.log('click....')
+       // console.log('click....')
         let users = await axios.get(`http://localhost:3001/premium/showLeaderBoard`)
-        console.log('users..',users)
+       // console.log('users..',users)
         document.getElementById('leaderboard').innerHTML=""  
         users.data.map(user => printLeaderBoard(user))
     }
@@ -85,7 +85,7 @@ function addLeadeboard(premium){
     let div  = document.getElementById('exp-table')
      div.innerHTML=""
       let btn = document.createElement('button')
-      btn.appendChild(document.createTextNode('Show Table'))
+      btn.appendChild(document.createTextNode('Download Expense'))
       btn.setAttribute('class','float-right p-1 m-1')
       if(premium){
       div.appendChild(btn).onclick = async function(){
@@ -99,40 +99,52 @@ function addLeadeboard(premium){
   }
 
 const getExpense = async () =>{
-    console.log('get call token',token)
+   // console.log('get call token',token)
    
     let ul = document.getElementById('expenses')
     ul.innerHTML=''
+    try{
    let expresponse = await axios.get(`http://localhost:3001/expense/allexpenses`,{headers:{"Authorization":token}})
     let response = await axios.get('http://localhost:3001/purchase/usercategory',{headers:{"Authorization":token}})
    const usercategory = response.data
    ispremiumuser = response.data
-   console.log('usercategory>>>>>>>',usercategory) 
+  // console.log('usercategory>>>>>>>',usercategory) 
    addPremiumButton(usercategory) 
    addLeadeboard(usercategory) 
    addTableButton(usercategory)                
   // print(item)
-  console.log('get resp',expresponse)
+ // console.log('get resp',expresponse)
   expresponse.data.expense.map((item)=> printExpense(item))
+}catch(error){
+    console.error('error',error)
+}
 }
 
 const postExpense = async (expense) => {
+    try{
     let resp = await axios.post('http://localhost:3001/expense/addexpense',expense,{headers:{"Authorization":token}})
-    console.log('post resp',resp)
+   // console.log('post resp',resp)
     getExpense()
+    }catch(error){
+        console.error('error',error)
+    }
 }
 
 const deleteExpense = async (id)=>{
+    try{
     let resp = await axios.delete(`http://localhost:3001/expense/deleteexpense/${id}`)
     getExpense()
+}catch(error){
+    console.error('error',error)
+}
 }
 
 function delItem(e){
-    console.log('del call')
+   // console.log('del call')
     if(e.target.getAttribute('class') == 'del float-right')
     {
         let id = e.target.getAttribute('id')
-        console.log('id',id)
+        //console.log('id',id)
         deleteExpense(id)
     }
 }
@@ -170,9 +182,9 @@ function showPagination({currentPage,previousPage,nextPage,hasNextPage,hasPrevio
 async function getProducts(page){
     try{
          limit = +localStorage.getItem('itemperpage')
-         console.log('limit..',limit, typeof limit)
+        // console.log('limit..',limit, typeof limit)
         let expresponse = await axios.get(`${backendAPI}/expense/allexpenses/?page=${page}&maxItem=${limit}`,{headers:{"Authorization":token}})
-                    console.log('getP data',expresponse)
+                   // console.log('getP data',expresponse)
               //  listProducts(data.products) // DOM manipulation
                 showPagination(expresponse.data) 
                //  delete previous item from expense list
@@ -188,7 +200,7 @@ async function getProducts(page){
 
 function addRowperPage(e){
     e.preventDefault();
-    console.log('click...')
+   // console.log('click...')
     let selectElement = document.getElementById('rowperpage').value;
     localStorage.setItem('itemperpage',selectElement)
     getProducts(1)
@@ -198,12 +210,12 @@ window.addEventListener('DOMContentLoaded',async ()=>{
     const page = 1
     try{
     let expresponse = await axios.get(`${backendAPI}/expense/allexpenses?page=${page}`,{headers:{"Authorization":token}})
-               console.log('window data load',expresponse.data)
+              // console.log('window data load',expresponse.data)
               //  listProducts() // DOM manipulation
                 showPagination(expresponse.data)  
                getExpense()
     }catch(err){
-        console.log(err) 
+        console.error('error',err)
     }
    // set limit per page
     let pagerow = document.getElementById('rowperpage')
@@ -213,10 +225,11 @@ window.addEventListener('DOMContentLoaded',async ()=>{
 document.getElementById('rzp-button').onclick = async function(e){
    
     let token = localStorage.getItem('token')
-    console.log('rzp-click',token)
+   // console.log('rzp-click',token)
     if(!ispremiumuser){
+        try{
     let response = await axios.get(`http://localhost:3001/purchase/premiummembership`,{headers:{"Authorization":token}})
-  console.log('resp44',response)
+  //console.log('resp44',response)
 
   var options = {
     "key":response.data.key_id,
@@ -250,8 +263,12 @@ document.getElementById('rzp-button').onclick = async function(e){
 
   })
 
+}catch(error){
+    console.error('error',error)
 }
 }
+}
+
 
 
 

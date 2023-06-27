@@ -1,28 +1,28 @@
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const User = require('../model/user')
-require('dotenv').config()
+//require('dotenv').config()
 const saltRounds = 10;
 
 
 exports.signup = async (req,res)=>{
   const {name,email,password} = req.body;
-  console.log('data..',name,email,password)
+  //console.log('data..',name,email,password)
   try{
   let user = await User.findOne({where:{email:email}})
   if(user === null){
-    console.log('not exist..')
+    //console.log('not exist..')
     let hasedPassword = await bcrypt.hash(password,saltRounds)
     let response = await User.create({name,email,password:hasedPassword})
     res.status(201).json(response)
   } 
   else{
-  console.log('exist..')
+  //console.log('exist..')
   res.status(409).json({success:false,message:"User already exist"})
   }
 }
 catch(e){
-    console.log('er',e)
+   // console.log('er',e)
 }
 }
 
@@ -31,16 +31,16 @@ let getnrateAccessToken = (id)=>{
 }
 exports.signin = async (req,res)=>{
     const {email,password} = req.body;
-    console.log('data..',email,password)
+   // console.log('data..',email,password)
     try{
     let user = await User.findOne({where:{email:email}})
-    console.log('user...',user)
+   // console.log('user...',user)
     if(user === null ){
-      console.log('not exist..')
+    //  console.log('not exist..')
       res.status(404).json({success:false,meassage:"The email address you entered isn't connected to an account."}) 
     }
     else{
-    console.log('exist..',user.password)
+   // console.log('exist..',user.password)
     const match = await bcrypt.compare(password,user.password)
     if(match)
     res.status(200).json({success:true,meassage:"You are successfully logged in",token:getnrateAccessToken(user.id)}) 
@@ -51,7 +51,8 @@ exports.signin = async (req,res)=>{
     }
   }
   catch(e){
-      console.log('er',e)
+    //  console.log('er',e)
+    res.status(500).json({ error: "Internal Server Error"})
   }
   }
 

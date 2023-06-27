@@ -7,14 +7,14 @@ const authonticate = async (req,res,next) =>{
  
   let token =req.headers.authorization
   const user = jwt.verify(token,process.env.SECRET_KEY)
-   console.log('user>>>',user)
+   //console.log('user>>>',user)
    User.findByPk(user.userId).then(user => {
-     console.log('find user',user)
+    // console.log('find user',user)
      req.user = user ;
      next();
    }).catch(err => console.log(err))
 }catch(err){
- console.log('err',err)
+  res.status(401).json({success:false,error:'unauthorized'})
 }
 }
 

@@ -27,10 +27,11 @@ const uploadTos3 = async(fileData,fName) =>{
       // 5) Upload the file to S3
       try{
 let data = await s3.upload(params).promise() // aws sdk not support properly async await so these resion we can use promise()
-    console.log('File uploaded successfully:', data.Location);
-    return data.Location;
+   // console.log('File uploaded successfully:', data.Location);
+    let url = data.Location
+    return url;
 }catch(err){
-  console.log('Error uploading file:', err);
+   res.status(500).json({sucess:false})
 }
    }
    module.exports = {uploadTos3}

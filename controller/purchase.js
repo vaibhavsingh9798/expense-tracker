@@ -1,9 +1,9 @@
 const Razorpay = require('razorpay')
-require('dotenv').config()
+//require('dotenv').config()
 const Order = require('../model/orders')
 
 exports.premiumpurchase = async (req,res)=>{
-  console.log('id,skey...',process.env.RAZORPAY_KEY_ID,process.env.RAZORPAY_KEY_SECRET)
+  //console.log('id,skey...',process.env.RAZORPAY_KEY_ID,process.env.RAZORPAY_KEY_SECRET)
  try{
   let rzp = new Razorpay({
     key_id:process.env.RAZORPAY_KEY_ID,
@@ -14,7 +14,7 @@ exports.premiumpurchase = async (req,res)=>{
     if(err){
     throw new Error(JSON.stringify(err))
     }
-    console.log('order...',order)
+    //console.log('order...',order)
     //sequelize magic function for store info in database
     req.user.createOrder({orderid:order.id, status:'PENDING'}).then(() =>{  
         return res.status(201).json({order,key_id:rzp.key_id})
@@ -23,7 +23,6 @@ exports.premiumpurchase = async (req,res)=>{
     })
   })
  }catch(err){
-  console.log(err)
   res.status(403).json({message:'something went wrong',error:err})
  }
 
@@ -31,8 +30,8 @@ exports.premiumpurchase = async (req,res)=>{
 
 exports.updateTransactionStatus = async (req,res)=> {
  const {payment_id,order_id,success} = req.body;
- console.log('success>>>>>>>',success)
- console.log('oid....',order_id,payment_id)
+ //console.log('success>>>>>>>',success)
+ //console.log('oid....',order_id,payment_id)
  try{
  let order = await  Order.findOne({where:{orderid:order_id}}) 
  if(success){
@@ -41,13 +40,13 @@ exports.updateTransactionStatus = async (req,res)=> {
  res.status(202).json({success:true,message:'Transaction successful'})
  }
  else{
-  console.log('else block ...........')
+ // console.log('else block ...........')
   let updatedorder = order.update({paymentid:payment_id,status:"FAILED"})
   let response = await req.user.update({ispremiumuser:false})
   res.status(202).json({success:false,message:'Transaction failed'})
  }
  }catch(err){
-  console.log('err',err)
+    res.status(500).json({sucess:false})
  } 
 }  
 
@@ -55,6 +54,7 @@ exports.getUserCategory = async (req,res) =>{
   try{
   res.status(200).json(req.user.ispremiumuser)
   }catch(err){
-    console.log(err)
+    res.status(500).json({success:false})
+    
   }
 }

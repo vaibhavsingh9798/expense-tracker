@@ -14,7 +14,7 @@ function loginFormSubmit(e){
 }
 
 const login = async (user)=>{
-    console.log('login call')
+   // console.log('login call')
     let div = document.getElementById('errmsg')
     div.innerHTML=''
     let success = true;
@@ -22,11 +22,11 @@ const login = async (user)=>{
     let token;
     try{
     const resp = await axios.post('http://localhost:3001/user/signin',user)
-    console.log('resp....',resp)
+   // console.log('resp....',resp)
     token = resp.data.token
     }
-    catch(e){
-        console.log('err',e)
+    catch(error){
+        console.error('err',error)
        success = e.response.data.success
        errMsg = e.response.data.meassage
     }
