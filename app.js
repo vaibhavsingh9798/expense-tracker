@@ -42,7 +42,6 @@ app.use('/password',passwordRoute)
 
 
 
-
 User.hasMany(Expense,{ foreignKey: 'userId' })
 Expense.belongsTo(User,{ foreignKey: 'userId' })
 
@@ -55,7 +54,7 @@ ForgotPassword.belongsTo(User)
 User.hasMany(DownloadFile,{foreignKey:'userId'})
 DownloadFile.belongsTo(User,{foreignKey:'userId'})
 
-sequelize.sync() // {force:true}
+sequelize.sync({force:true}) // {force:true}
 .then(() =>{
     app.listen(process.env.PORT || 3000,()=>{
         console.log('server is running on port 3001')
