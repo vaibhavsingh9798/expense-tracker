@@ -35,13 +35,13 @@ exports.updateTransactionStatus = async (req,res)=> {
  try{
  let order = await  Order.findOne({where:{orderid:order_id}}) 
  if(success){
- let updatedorder = order.update({paymentid:payment_id,status:"SUCCESSFUL"})
+ let updatedorder = await order.update({paymentid:payment_id,status:"SUCCESSFUL"})
  let response = await req.user.update({ispremiumuser:true})
  res.status(202).json({success:true,message:'Transaction successful'})
  }
  else{
  // console.log('else block ...........')
-  let updatedorder = order.update({paymentid:payment_id,status:"FAILED"})
+  let updatedorder = await order.update({paymentid:payment_id,status:"FAILED"})
   let response = await req.user.update({ispremiumuser:false})
   res.status(202).json({success:false,message:'Transaction failed'})
  }

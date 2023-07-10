@@ -5,7 +5,7 @@ expenseForm.addEventListener('submit',submitForm)
 let ul = document.getElementById('expenses')
 ul.addEventListener('click',delItem)
 let token = localStorage.getItem('token')
-const backendAPI = 'http://localhost:3001' 
+const backendAPI = 'http://16.171.147.248:3001' 
 let pagination = document.getElementById('pagination')
 let limit = 2;
 
@@ -63,7 +63,9 @@ function addLeadeboard(premium){
     if(premium)
     div.appendChild(btn).onclick = async function(){
        // console.log('click....')
-        let users = await axios.get(`http://localhost:3001/premium/showLeaderBoard`)
+        let users = await axios.get(`
+
+http://16.171.147.248:3001/premium/showLeaderBoard`)
        // console.log('users..',users)
         document.getElementById('leaderboard').innerHTML=""  
         users.data.map(user => printLeaderBoard(user))
@@ -76,7 +78,9 @@ function addLeadeboard(premium){
 //  async function downlaod(e){
 //     e.preventDefault();
 //     console.log('downlad...')
-//     await axios.get(`http://localhost:3001/user/expense/download`,{headers:{"Authorization":token}})
+//     await axios.get(`
+
+http://16.171.147.248:3001/user/expense/download`,{headers:{"Authorization":token}})
 
 //   }
 
@@ -92,7 +96,9 @@ function addLeadeboard(premium){
         //window.location.href='expensetable.html'
         // let dow = document.getElementById('dow-btn')
         // dow.addEventListener('click',downlaod)
-        let response = await axios.get(`http://localhost:3001/expense/download`,{headers:{"Authorization":token}})
+        let response = await axios.get(`
+
+http://16.171.147.248:3001/expense/download`,{headers:{"Authorization":token}})
         window.open(response.data.fileURL,'_blank')
       }
       }
@@ -104,8 +110,8 @@ const getExpense = async () =>{
     let ul = document.getElementById('expenses')
     ul.innerHTML=''
     try{
-   let expresponse = await axios.get(`http://localhost:3001/expense/allexpenses`,{headers:{"Authorization":token}})
-    let response = await axios.get('http://localhost:3001/purchase/usercategory',{headers:{"Authorization":token}})
+   let expresponse = await axios.get(`http://16.171.147.248:3001/expense/allexpenses`,{headers:{"Authorization":token}})
+    let response = await axios.get('http://16.171.147.248:3001/purchase/usercategory',{headers:{"Authorization":token}})
    const usercategory = response.data
    ispremiumuser = response.data
   // console.log('usercategory>>>>>>>',usercategory) 
@@ -122,7 +128,7 @@ const getExpense = async () =>{
 
 const postExpense = async (expense) => {
     try{
-    let resp = await axios.post('http://localhost:3001/expense/addexpense',expense,{headers:{"Authorization":token}})
+    let resp = await axios.post('http://16.171.147.248:3001/expense/addexpense',expense,{headers:{"Authorization":token}})
    // console.log('post resp',resp)
     getExpense()
     }catch(error){
@@ -132,7 +138,8 @@ const postExpense = async (expense) => {
 
 const deleteExpense = async (id)=>{
     try{
-    let resp = await axios.delete(`http://localhost:3001/expense/deleteexpense/${id}`)
+    let resp = await axios.delete(`
+http://16.171.147.248:3001/expense/deleteexpense/${id}`)
     getExpense()
 }catch(error){
     console.error('error',error)
@@ -228,14 +235,16 @@ document.getElementById('rzp-button').onclick = async function(e){
    // console.log('rzp-click',token)
     if(!ispremiumuser){
         try{
-    let response = await axios.get(`http://localhost:3001/purchase/premiummembership`,{headers:{"Authorization":token}})
+    let response = await axios.get(`
+http://16.171.147.248:3001/purchase/premiummembership`,{headers:{"Authorization":token}})
   //console.log('resp44',response)
 
   var options = {
     "key":response.data.key_id,
     "order_id":response.data.order.id,
     "handler": async function(response){
-        await axios.post(`http://localhost:3001/purchase/updatetransactionstatus`,{
+        await axios.post(`
+http://16.171.147.248:3001/purchase/updatetransactionstatus`,{
         order_id: options.order_id,
         payment_id: response.razorpay_payment_id,
         success:true 
@@ -254,7 +263,8 @@ document.getElementById('rzp-button').onclick = async function(e){
   e.preventDefault();
   
   rzp1.on('payment.failed',async function(response){
-    await axios.post(`http://localhost:3001/purchase/updatetransactionstatus`,{
+    await axios.post(`
+http://16.171.147.248:3001/purchase/updatetransactionstatus`,{
         order_id: options.order_id,
         payment_id: response.razorpay_payment_id,
         success:false

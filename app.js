@@ -7,6 +7,7 @@ const morgan = require('morgan')
 const fs = require('fs')
 const path = require('path')
 require('dotenv').config()
+
 const sequelize = require('./util/database')
 const userRoute = require('./route/user')
 const expenseRoute = require('./route/expense')
@@ -25,6 +26,7 @@ const app = express()
 app.use(cors())
 app.use(bodyParser.urlencoded({extended:true}))
 app.use(bodyParser.json())
+app.use(express.static('public')); // Serve static files from the 'public' directory
 app.use(helmet()) 
 app.use(compression())
 const accessLogStream =  fs.createWriteStream(path.join(__dirname,'access.log'),{flags:'a'})
@@ -35,9 +37,14 @@ app.use('/expense',expenseRoute)
 app.use('/purchase',purchaseRoute)
 app.use('/premium',premiumuserRoute)
 app.use('/password',passwordRoute)
-// app.get('/',(req,res) =>{
-//     res.send('HomePage')
-// })
+
+    // app.set('views', path.join(__dirname, 'views'));
+    // app.set('view engine', 'jade');
+app.use((req,res) =>{
+    console.log(req.url)
+    console.log(path.join(__dirname,`public/${req.url}`))
+    res.sendFile(path.join(__dirname,`public/${req.url}`))
+})
 
 
 
@@ -54,7 +61,7 @@ ForgotPassword.belongsTo(User)
 User.hasMany(DownloadFile,{foreignKey:'userId'})
 DownloadFile.belongsTo(User,{foreignKey:'userId'})
 
-sequelize.sync({force:true}) // {force:true}
+sequelize.sync() // {force:true}
 .then(() =>{
     app.listen(process.env.PORT || 3000,()=>{
         console.log('server is running on port 3001')

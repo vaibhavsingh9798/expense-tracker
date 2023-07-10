@@ -23,6 +23,7 @@ exports.signup = async (req,res)=>{
 }
 catch(e){
    // console.log('er',e)
+   res.status(400).json({success:false,message:"Something wrong!"})
 }
 }
 

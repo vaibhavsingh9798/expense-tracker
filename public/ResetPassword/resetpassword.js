@@ -5,7 +5,7 @@ form.addEventListener('submit',handlePassword)
 let postMail = async (uemail)=>{
    // console.log('post mail',uemail)
    try{
-    let resp = axios.post('http://localhost:3001/password/forgotpassword',{uemail})
+    let resp = await axios.post('http://16.171.147.248:3001/password/forgotpassword',{uemail})
   }catch(error){
     console.error('error',error)
 }

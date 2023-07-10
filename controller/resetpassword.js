@@ -37,23 +37,22 @@ exports.postMail = async (req,res) =>{
         sender,
         to: receivers,
         subject:'Reset Password',
-        textContent: `http://localhost:3001/password/resetpassword/${uuid}`
+        textContent: `
+http://16.171.147.248:3001/password/resetpassword/${uuid}`
        })
        //console.log('repemail',respemail)
      }
-    
-
     }
 catch(err){
    res.status(500).json({success:false})
 }
 }
-
 exports.resetPassword = async (req,res) =>{
   let {uid} = req.params;
  // console.log('uid',uid)
   const passwordFormHTML = `
-  <form action="http://localhost:3001/password/updatepassword/${uid}" method="POST">
+  <form action="
+http://16.171.147.248:3001/password/updatepassword/${uid}" method="POST">
   <center>
     <h3>Reset Password</h3>
     <label for="passwoed">New password</label>
